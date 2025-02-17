@@ -10,8 +10,11 @@
 <h1>psqlODBC release notes</h1>
 <hr>
 <ol type="1">
-  <h2><a id="17.00.0004">psqlODBC 17.00.0004 Release</a></h2>
+  <h2><a id="17.00.0004">psqlODBC 17.00.0004 + greptime Release</a></h2>
   Changes:<br />
+  <li>
+  Mod: Disable checking for transaction isolation, fix some repeated NULL projection bindings, and change large object type name to "Binary" to support greptimedb
+  </li>
   <li>
   Fix: Install the drivers with short file names <a href="https://github.com/postgresql-interfaces/psqlodbc/pull/76">PR #76</a>
   Author: <a href="https://github.com/">Christian Ullrich</a>

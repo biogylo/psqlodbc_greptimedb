@@ -1898,7 +1898,7 @@ retry_public_schema:
 	initPQExpBuffer(&tables_query);
 #define	return	DONT_CALL_RETURN_FROM_HERE???
 	if (list_cat)
-		appendPQExpBufferStr(&tables_query, "select NULL, NULL, NULL");
+		appendPQExpBufferStr(&tables_query, "select NULL, NULL as NULL2, NULL as NULL3");
 	else if (list_table_types)
 	{
 		/*
@@ -1908,7 +1908,7 @@ retry_public_schema:
 		 * - 9.1 and newer versions have foreign tables
 		 */
 		appendPQExpBufferStr(&tables_query,
-				"select NULL, NULL, relkind from (select 'r' as relkind "
+				"select NULL, NULL as NULL2, relkind from (select 'r' as relkind "
 				"union select 'v' "
 				"union select 'm' "
 				"union select 'f' "
@@ -1916,7 +1916,7 @@ retry_public_schema:
 	}
 	else if (list_schemas)
 	{
-		appendPQExpBufferStr(&tables_query, "select NULL, nspname, NULL"
+		appendPQExpBufferStr(&tables_query, "select NULL, nspname, NULL as NULL2"
 			" from pg_catalog.pg_namespace n where true");
 	}
 	else
@@ -2441,7 +2441,7 @@ retry_public_schema:
 		"select n.nspname, c.relname, a.attname, a.atttypid, "
 		"t.typname, a.attnum, a.attlen, a.atttypmod, a.attnotnull, "
 		"c.relhasrules, c.relkind, c.oid, pg_get_expr(d.adbin, d.adrelid), "
-        "case t.typtype when 'd' then t.typbasetype else 0 end, t.typtypmod, "
+        "0, t.typtypmod, "
         "%s, %s, c.relhassubclass "
 		"from (((pg_catalog.pg_class c "
 		"inner join pg_catalog.pg_namespace n on n.oid = c.relnamespace",

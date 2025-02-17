@@ -1076,6 +1076,7 @@ static char CC_initial_log(ConnectionClass *self, const char *func)
 }
 
 static int handle_show_results(const QResultClass *res);
+#define DISABLE_TRANSACTION_ISOLATION 1
 #define	TRANSACTION_ISOLATION "transaction_isolation"
 #define	ISOLATION_SHOW_QUERY "show " TRANSACTION_ISOLATION
 
@@ -1094,7 +1095,11 @@ LIBPQ_CC_connect(ConnectionClass *self, char *salt_para)
 
 	if (ret = LIBPQ_connect(self), ret <= 0)
 		return ret;
-	res = CC_send_query(self, "SET DateStyle = 'ISO';SET extra_float_digits = 2;" ISOLATION_SHOW_QUERY, NULL, READ_ONLY_QUERY, NULL);
+	#ifndef DISABLE_TRANSACTION_ISOLATION
+		res = CC_send_query(self, "SET DateStyle = 'ISO';SET extra_float_digits = 2;" ISOLATION_SHOW_QUERY, NULL, READ_ONLY_QUERY, NULL);
+	#else
+		res = CC_send_query(self, "SET DateStyle = 'ISO';", NULL, READ_ONLY_QUERY, NULL);
+	#endif
 	if (QR_command_maybe_successful(res))
 	{
 		handle_show_results(res);
@@ -1324,8 +1329,8 @@ char CC_get_escape(const ConnectionClass *self)
 
 int	CC_get_max_idlen(ConnectionClass *self)
 {
-	int	len = self->max_identifier_length;
-
+	int len = self->max_identifier_length = 64;
+	return 0;
 	if  (len < 0)
 	{
 		QResultClass	*res;
@@ -2595,7 +2600,7 @@ CC_lookup_lo(ConnectionClass *self)
 
 	MYLOG(0, "entering...\n");
 
-	res = CC_send_query(self, "select oid, typbasetype from pg_type where typname = '"  PG_TYPE_LO_NAME "'",
+	res = CC_send_query(self, "select oid, 0 as typbasetype from pg_type where typname = '"  PG_TYPE_LO_NAME "'",
 		NULL, READ_ONLY_QUERY, NULL);
 
 	if (!QR_command_maybe_successful(res))

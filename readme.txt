@@ -1,3 +1,37 @@
+**//// Added by Juan Navarro on Feb 17 2025 ////**
+
+### PosgreSQL ODBC driver with GreptimeDB support for Windows
+
+
+
+This is a modified version of the PostgreSQL connector to ignore the transaction isolation query
+and avoid using repeated NULL bindings in some other queries, this in order to allow
+successful connection with a GreptimeDB which uses DataFusion for query optimization 
+in the backend.
+
+I modified the ODBC out of necessity since I needed to create a connector that would work with JMP, the data analysis package, and other tools such as excel.
+
+To build this very legacy tool in windows you will need to do a couple things
+
+
+- You need to download an old, x86 32 bit version of postgresql. Probably the zipped version 9 on postgres binary downloads. Unzip into some folder
+
+- Use `./winbuild/editConfiguration.ps1` to point the build system to the right include, bin, and lib directories in the postgres folder, only the ones for the x86 32 bit postgresql version.
+
+- Install visual studio community, and add any of the MSVC 2015 C++ build tools, its like a 4 gb download. This is so that `dumpbin` exists and the installers can be generated. Mod the dumpbinexe constant in MSProgram-Get.psm1 line 220 to point to your dumpbin, E.G. put  `"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x86\dumpbin.exe"` in there
+
+- Install Wix and necessary extensions
+    - dotnet tool install --global wix --version 5.0.2
+    - wix extension add --global WixToolset.UI.wixext
+    - wix extension add --global WixToolset.Util.wixext
+
+- To build the installers run `.\winbuild\BuildAll.ps1`, once it builds without errors, run `.\installer\buildInstallers.ps1`. The installer will show up under `.\installer\x86\` and `.\installer\x64`
+
+- To use with greptimedb you'll have to use the x64 Unicode driver. An example ODBC connection string is the following:
+`Driver={PostgreSQL Unicode};server=localhost;port=4003;database=public;`
+
+**//// Added by Juan Navarro on Feb 17 2025 ////**
+
 
 /********************************************************************
 

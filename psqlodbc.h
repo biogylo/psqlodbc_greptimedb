@@ -630,7 +630,7 @@ void		logs_on_off(int cnopen, int, int);
 
 #define PG_TYPE_LO_UNDEFINED			(-999)		/* hack until permanent
 												 * type available */
-#define PG_TYPE_LO_NAME				"lo"
+#define PG_TYPE_LO_NAME				"Binary"
 #define CTID_ATTNUM				(-1)	/* the attnum of ctid */
 #define OID_ATTNUM				(-2)	/* the attnum of oid */
 #define XMIN_ATTNUM				(-3)	/* the attnum of xmin */
